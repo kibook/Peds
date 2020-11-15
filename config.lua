@@ -67,7 +67,7 @@ Config.Peds = {
 	{
 		model = 'a_f_y_beach_01',
 		animation = {
-			dict = 'anim@amb@nightclub@peds',
+			dict = 'anim@amb@nightclub@peds@',
 			name = 'amb_world_human_cheering_female_C',
 			flag = 9
 		},
@@ -84,7 +84,7 @@ Config.Peds = {
 	{
 		model = 'a_f_y_bevhills_04',
 		animation = {
-			dict = 'anim@amb@nightclub@peds',
+			dict = 'anim@amb@nightclub@peds@',
 			name = 'amb_world_human_partying_female_partying_beer_base',
 			flag = 9
 		},
