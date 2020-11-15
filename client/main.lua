@@ -14,6 +14,7 @@ CreateThread(function()
 
 		for _, pedGroup in ipairs(Config.Peds) do
 			local model = GetHashKey(pedGroup.model)
+			local pedType = pedGroup.pedType or 4
 
 			RequestModel(model)
 			while not HasModelLoaded(model) do
@@ -22,10 +23,10 @@ CreateThread(function()
 
 			for _, location in ipairs(pedGroup.locations) do
 				local nearby = IsNearby(playerCoords, location)
-				local spawned = DoesEntityExist(location.handle)
+				local spawned = location.handle and DoesEntityExist(location.handle)
 
 				if nearby and not spawned then
-					local npc = CreatePed(location.pedType, model, location.x, location.y, location.z, location.heading, false, false)
+					local npc = CreatePed(pedType, model, location.x, location.y, location.z, location.heading, false, false)
 
 					FreezeEntityPosition(npc, true)
 					SetEntityInvincible(npc, true)
@@ -71,7 +72,7 @@ CreateThread(function()
 					location.handle = npc
 				elseif not nearby and spawned then
 					DeletePed(location.handle)
-					location.handle = 0
+					location.handle = nil
 				end
 			end
 
