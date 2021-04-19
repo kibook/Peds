@@ -3,13 +3,11 @@
 --http://ragepluginhook.net/PedModels.aspx--
 
 function IsNearby(playerCoords, pedCoords)
-	return GetDistanceBetweenCoords(playerCoords.x, playerCoords.y, playerCoords.z, pedCoords.x, pedCoords.y, pedCoords.z, true) <= Config.SpawnDistance
+	return #(playerCoords - vector3(pedCoords.x, pedCoords.y, pedCoords.z)) <= Config.SpawnDistance
 end
 
-CreateThread(function()
+Citizen.CreateThread(function()
 	while true do
-		Wait(0)
-
 		local playerCoords = GetEntityCoords(PlayerPedId())
 
 		for _, pedGroup in ipairs(Config.Peds) do
@@ -18,8 +16,9 @@ CreateThread(function()
 
 			if IsModelInCdimage(model) then
 				RequestModel(model)
+
 				while not HasModelLoaded(model) do
-					Wait(0)
+					Citizen.Wait(0)
 				end
 
 				for _, location in ipairs(pedGroup.locations) do
@@ -44,8 +43,9 @@ CreateThread(function()
 
 							if DoesAnimDictExist(pedGroup.animation.dict) then
 								RequestAnimDict(pedGroup.animation.dict)
+
 								while not HasAnimDictLoaded(pedGroup.animation.dict) do
-									Wait(0)
+									Citizen.Wait(0)
 								end
 
 								TaskPlayAnim(npc, pedGroup.animation.dict, pedGroup.animation.name, blendInSpeed, blendOutSpeed, duration, flag, playbackRate, 0, 0, 0)
@@ -86,6 +86,8 @@ CreateThread(function()
 				print('Invalid model: ' .. pedGroup.model)
 			end
 		end
+
+		Citizen.Wait(1000)
 	end
 end)
 
