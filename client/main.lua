@@ -19,7 +19,7 @@ Citizen.CreateThread(function()
 				local spawned = location.handle and DoesEntityExist(location.handle)
 
 				if nearby and not spawned then
-					if IsModelInCdImage(model) then
+					if IsModelInCdimage(model) then
 						RequestModel(model)
 
 						while not HasModelLoaded(model) do
