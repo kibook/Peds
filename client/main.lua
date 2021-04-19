@@ -14,18 +14,18 @@ Citizen.CreateThread(function()
 			local model = GetHashKey(pedGroup.model)
 			local pedType = pedGroup.pedType or 4
 
-			if IsModelInCdimage(model) then
-				RequestModel(model)
+			for _, location in ipairs(pedGroup.locations) do
+				local nearby = IsNearby(playerCoords, location)
+				local spawned = location.handle and DoesEntityExist(location.handle)
 
-				while not HasModelLoaded(model) do
-					Citizen.Wait(0)
-				end
+				if nearby and not spawned then
+					if IsModelInCdImage(model) then
+						RequestModel(model)
 
-				for _, location in ipairs(pedGroup.locations) do
-					local nearby = IsNearby(playerCoords, location)
-					local spawned = location.handle and DoesEntityExist(location.handle)
+						while not HasModelLoaded(model) do
+							Citizen.Wait(0)
+						end
 
-					if nearby and not spawned then
 						local npc = CreatePed(pedType, model, location.x, location.y, location.z, location.heading, false, false)
 
 						FreezeEntityPosition(npc, true)
@@ -75,15 +75,13 @@ Citizen.CreateThread(function()
 						end
 
 						location.handle = npc
-					elseif not nearby and spawned then
-						DeletePed(location.handle)
-						location.handle = nil
+					else
+						print('Invalid model: ' .. pedGroup.model)
 					end
+				elseif not nearby and spawned then
+					DeletePed(location.handle)
+					location.handle = nil
 				end
-
-				SetModelAsNoLongerNeeded(model)
-			else
-				print('Invalid model: ' .. pedGroup.model)
 			end
 		end
 
