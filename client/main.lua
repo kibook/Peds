@@ -11,14 +11,14 @@ Citizen.CreateThread(function()
 		local playerCoords = GetEntityCoords(PlayerPedId())
 
 		for _, pedGroup in ipairs(Config.Peds) do
-			local model = GetHashKey(pedGroup.model)
-			local pedType = pedGroup.pedType or 4
-
 			for _, location in ipairs(pedGroup.locations) do
 				local nearby = IsNearby(playerCoords, location)
 				local spawned = location.handle and DoesEntityExist(location.handle)
 
 				if nearby and not spawned then
+					local model = GetHashKey(pedGroup.model)
+					local pedType = pedGroup.pedType or 4
+
 					if IsModelInCdimage(model) then
 						RequestModel(model)
 
@@ -27,6 +27,8 @@ Citizen.CreateThread(function()
 						end
 
 						local npc = CreatePed(pedType, model, location.x, location.y, location.z, location.heading, false, false)
+							
+						SetModelAsNoLongerNeeded(model)
 
 						FreezeEntityPosition(npc, true)
 						SetEntityInvincible(npc, true)
@@ -49,6 +51,8 @@ Citizen.CreateThread(function()
 								end
 
 								TaskPlayAnim(npc, pedGroup.animation.dict, pedGroup.animation.name, blendInSpeed, blendOutSpeed, duration, flag, playbackRate, 0, 0, 0)
+									
+								RemoveAnimDict(pedGroup.animation.dict)
 							else
 								print('Unknown animation dictionary: ' .. pedGroup.animation.dict)
 							end
